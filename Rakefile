@@ -41,7 +41,7 @@ task :package_gem do
     s.summary       = gem_config.summary
     s.description   = gem_config.description
     s.require_paths = gem_config.require_paths
-    s.files         = jar.files.values
+    s.files         = jar.files.values.select {|f|f.class == String }
 
     gem_config.runtime_dependencies.each do |dependency|
       s.add_runtime_dependency dependency
