@@ -1,7 +1,9 @@
 # encoding: utf-8
 module Tinto
   module Context
-    attr_reader :syncables
+    def syncables
+      @syncables ||= []
+    end
 
     def sync
       $redis.multi { syncables.each(&:sync) }
