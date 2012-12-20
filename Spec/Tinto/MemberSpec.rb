@@ -6,7 +6,6 @@ require 'ostruct'
 require 'uuidtools'
 require_relative '../../Lib/Tinto/Member'
 require_relative '../../Lib/Tinto/Exceptions'
-require_relative '../../Lib/Tinto/MasterCollection'
 
 include Tinto::Exceptions
 
@@ -171,16 +170,6 @@ describe Tinto::Member do
       member2.fetch
       member2.attributes.fetch('name').must_equal 'resource 2'
     end
-
-    it 'adds the resource to the master collection' do
-      resource  = factory(name: 'test')
-      master    = Tinto::MasterCollection.new resource.storage_key
-      member    = Tinto::Member.new resource
-
-      master.empty?.must_equal true
-      member.sync
-      master.size.must_equal 1
-    end
   end #sync
 
   describe '#update' do
@@ -270,19 +259,6 @@ describe Tinto::Member do
 
       member.destroy
       resource.attributes.keys.each { |k| resource.send(k).must_be_nil }
-    end
-
-    it 'removes the resource from the master collection' do
-      resource  = factory(name: 'test')
-      master    = Tinto::MasterCollection.new resource.storage_key
-      member    = Tinto::Member.new resource
-
-      master.add resource
-      master.sync
-      master.size.must_equal 1
-
-      member.destroy
-      master.empty?.must_equal true
     end
   end #destroy
 

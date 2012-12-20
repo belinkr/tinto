@@ -2,7 +2,6 @@
 require 'json'
 require 'uuidtools'
 require 'Tinto/Exceptions'
-require 'Tinto/MasterCollection'
 
 module Tinto
   class Member
@@ -53,10 +52,7 @@ module Tinto
 
     def sync
       validate!
-      $redis.multi do
-        $redis.set storage_key, self.to_json
-        master_collection.add(resource).sync
-      end
+      $redis.set storage_key, self.to_json
       resource
     end #sync
 
@@ -80,17 +76,10 @@ module Tinto
     end #undelete
 
     def destroy
-      $redis.multi do
-        $redis.del storage_key
-        master_collection.delete(resource).sync
-      end if $redis
+      $redis.del storage_key
       resource.attributes.keys.each { |k| resource.send :"#{k}=", nil }
       resource
     end #destroy
-
-    def sanitize
-      resource
-    end #sanitize
 
     def deleted?
       !!resource.deleted_at
@@ -116,10 +105,6 @@ module Tinto
     def storage_key
       "#{resource.storage_key}:#{resource.id}"
     end #storage_key
-
-    def master_collection
-      MasterCollection.new resource.storage_key
-    end #master_collection
 
     attr_reader :resource, :context
   end # Member
