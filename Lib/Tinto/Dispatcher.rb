@@ -4,10 +4,10 @@ require 'Tinto/Presenter'
 
 module Tinto
   class Dispatcher
-    def initialize(current_user, resource=nil, &block)
-      @current_user = current_user
-      @resource     = resource 
-      @operation    = block
+    def initialize(resource=nil, scope={}, &block)
+      @resource   = resource 
+      @scope      = scope
+      @operation  = block
     end
 
     def collection
@@ -60,8 +60,7 @@ module Tinto
     end
 
     def present
-      Tinto::Presenter.determine_for(@resource)
-        .new(@resource, @current_user).as_json
+      Tinto::Presenter.determine_for(@resource).new(@resource, @scope).as_json
     end
   end # Dispatcher
 end # Tinto
