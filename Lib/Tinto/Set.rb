@@ -82,7 +82,7 @@ module Tinto
       fetch unless in_memory?
       return Enumerator.new(self, :each) unless block_given?
       @buffered_set.each do |id| 
-        yield @collection.instantiate_member(id: id)
+        yield @collection.instantiate_member(id: id).fetch
       end
     end #each
 

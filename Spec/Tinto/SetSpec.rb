@@ -16,11 +16,19 @@ describe Tinto::Set do
     $redis.flushdb
     @collection = OpenStruct.new(storage_key: 'test')
     def @collection.valid?; true; end
-    def @collection.instantiate_member(attrs={}); OpenStruct.new(attrs); end
+    def @collection.instantiate_member(attrs={})
+      member = OpenStruct.new(attrs)
+      def member.fetch; self; end
+      member
+    end
 
     @collection2 = OpenStruct.new(storage_key: 'test2')
     def @collection2.valid?; true; end
-    def @collection2.instantiate_member(attrs={}); OpenStruct.new(attrs); end
+    def @collection2.instantiate_member(attrs={})
+      member = OpenStruct.new(attrs); 
+      def member.fetch; self; end
+      member
+    end
   end
   
   describe '#initialize' do

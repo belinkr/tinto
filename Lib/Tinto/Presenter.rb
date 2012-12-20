@@ -5,18 +5,17 @@ module Tinto
   module Presenter
     def self.determine_for(resource)
       return Tinto::Presenter::Collection if resource.kind_of? Enumerable
-      chains = resource.class.to_s.split("::")
-      chains.pop
-      chains.push "Presenter"
+      parts = resource.class.to_s.split("::")
+      parts.pop
+      parts.push "Presenter"
 
-      klass = Object.const_get(chains.shift)
-      while const = chains.shift
-        klass = klass.const_get(const)
+      klass = Object.const_get(parts.shift)
+
+      while constant = parts.shift
+        klass = klass.const_get(constant)
       end
 
       klass
-    rescue NameError
-      false
     end
 
     def self.timestamps_for(resource)
@@ -50,28 +49,30 @@ module Tinto
     end
 
     class Collection
-      def initialize(collection, actor=nil)
+      def initialize(collection, scope={})
         @collection = collection
-        @actor      = actor
-      end
+        @scope      = scope
+      end #initialize
 
       def as_poro
-        @collection.map { |member|
-          member.fetch
-          unless member.deleted_at
-            member_presenter.new(member, @actor).as_poro 
-          end
-        }
-      end
+        collection.map do |member| 
+          presenter_klass_for(member).new(member, scope).as_poro
+        end
+      end #as_poro
 
-      def as_json
-        "[#{as_poro.map { |i| i.to_json }.join(',')}]"
-      end
+      def as_json(*args)
+        as_poro.to_json(*args)
+        #map { |i| i.to_json(*args) }.join(',')}]"
+      end #as_json
 
-      def member_presenter
-        return false unless @collection.length > 0
-        Tinto::Presenter.determine_for(@collection.first)
-      end
+      private
+
+      attr_reader :collection, :scope
+
+      def presenter_klass_for(member)
+        @presenter_klass ||= Tinto::Presenter.determine_for(member)
+      end #presenter
     end # Collection
+
   end # Presenter
 end # Tinto
