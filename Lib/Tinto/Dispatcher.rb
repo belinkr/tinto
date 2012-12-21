@@ -35,7 +35,7 @@ module Tinto
     end
 
     def delete
-      @operation.call
+      operation.call
       [204]
     rescue => exception
       handle exception
@@ -50,18 +50,20 @@ module Tinto
       when Exceptions::NotFound           then [404]
       else raise exception
       end
-    end
+    end #handle
 
     private
 
+    attr_reader :resource, :scope, :operation
+
     def response_body
-      @resource = @operation.call
+      @resource = operation.call
       present
-    end
+    end #response_body
 
     def present
-      Tinto::Presenter.determine_for(@resource).new(@resource, @scope).as_json
-    end
+      Tinto::Presenter.determine_for(resource).new(resource, scope).as_json
+    end #present
   end # Dispatcher
 end # Tinto
 

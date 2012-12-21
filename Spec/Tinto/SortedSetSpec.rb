@@ -16,7 +16,11 @@ describe Tinto::SortedSet do
     $redis.flushdb
     @collection = OpenStruct.new(storage_key: 'test:key')
     def @collection.valid?; true; end
-    def @collection.instantiate_member(attrs={}); OpenStruct.new(attrs) ; end
+    def @collection.instantiate_member(attrs={}); 
+      member = OpenStruct.new(attrs)
+      def member.fetch; self; end
+      member
+    end
   end
 
   describe '#initialize' do
