@@ -3,13 +3,17 @@ $:.unshift File.expand_path('Lib')
 group :tinto do
   guard :minitest, test_folders: ["Spec/Tinto"], 
   test_file_patterns: ["*Spec.rb"] do
-    watch(%r|^Tinto/(.*)/(.*)\.rb|) { |matches| 
-      "Spec/#{matches[1]}/#{matches[2]}Spec.rb" 
+    watch(%r|^Lib/Tinto/(.*)\.rb|) { |matches| 
+      "Spec/Tinto/#{matches[1]}Spec.rb" 
     }
-    watch(%r|^Lib/Tinto/(.*)/(.*)/(.*)\.rb|) { |matches| 
-      "Spec/#{matches[1]}/#{matches[2]}/#{matches[3]}Spec.rb" 
+    watch(%r|^Lib/Tinto/(.*)/(.*)\.rb|) { |matches| 
+      "Spec/Tinto/#{matches[1]}/#{matches[2]}Spec.rb" 
+    }
+    watch(%r|^Lib/Tinto/(.*)/(.*)\.rb|) { |matches| 
+      "Spec/Tinto/#{matches[1]}/#{matches[2]}/#{matches[3]}Spec.rb" 
     }
     watch(%r|^Spec/Tinto/(.*)/(.*)Spec\.rb|)
+    watch(%r|^Spec/Tinto/(.*)Spec\.rb|)
   end
 end
 
