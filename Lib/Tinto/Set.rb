@@ -8,9 +8,9 @@ module Tinto
     include Enumerable
     include Tinto::Exceptions
 
-    INTERFACE = %w{ validate! in_memory? sync synced? page fetch reset each 
+    INTERFACE = %w{ validate! in_memory? sync synced? page fetch reset each
                     size length empty? exists? include? first add merge delete
-                    clear first }
+                    clear}
 
     def initialize(collection)
       @collection       = collection
@@ -81,7 +81,7 @@ module Tinto
       validate!
       fetch unless in_memory?
       return Enumerator.new(self, :each) unless block_given?
-      @buffered_set.each do |id| 
+      @buffered_set.each do |id|
         yield @collection.instantiate_member(id: id).fetch
       end
     end #each
