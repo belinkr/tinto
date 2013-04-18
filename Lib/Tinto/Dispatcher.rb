@@ -5,7 +5,7 @@ require 'Tinto/Presenter'
 module Tinto
   class Dispatcher
     def initialize(resource=nil, scope={}, &block)
-      @resource   = resource 
+      @resource   = resource
       @scope      = scope
       @operation  = block
     end

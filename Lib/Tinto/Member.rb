@@ -9,7 +9,7 @@ module Tinto
 
     NO_SCORE_VALUE = -1.0
     INTERFACE      = %w{ validate! to_hash == score to_json fetch
-                         sync update delete undelete destroy sanitize 
+                         sync update delete undelete destroy sanitize
                          deleted? }
 
     def initialize(resource, context=nil)
@@ -52,7 +52,7 @@ module Tinto
 
     def sync
       validate!
-      $redis.set storage_key, self.to_json
+      $redis.set storage_key, resource.to_json
       resource
     end #sync
 

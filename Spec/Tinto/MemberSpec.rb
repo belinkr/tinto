@@ -13,7 +13,16 @@ describe Tinto::Member do
   $redis ||= Redis.new
   $redis.select 8
 
-  before { $redis.flushdb }
+  before {
+    $redis.flushdb
+    class OpenStruct
+      def to_json
+        self.attributes.to_json
+      end
+    end
+  }
+  after {
+  }
 
   describe '#initialize' do
     it 'requires a member resource' do
@@ -266,7 +275,7 @@ describe Tinto::Member do
     it 'returns true if resource is deleted' do
       resource  = factory(name: 'test')
       member    = Tinto::Member.new resource
-      
+
       member.deleted?.must_equal false
       member.delete
       member.deleted?.must_equal true
@@ -294,4 +303,4 @@ describe Tinto::Member do
     member
   end
 end # Tinto::Member
-  
+
